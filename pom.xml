@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.gbif.images</groupId>
+  <artifactId>images-pipelines</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <deeplearning4j.version>1.0.0-M2.1</deeplearning4j.version>
+    <hbase-spark.version>1.0.0</hbase-spark.version>
+    <elasticsearch-hadoop.version>8.10.2</elasticsearch-hadoop.version>
+    <hbase.version>1.2.0-cdh5.16.2</hbase.version>
+    <zookeeper.version>3.4.5-cdh5.16.2</zookeeper.version>
+    <lombok.version>1.18.28</lombok.version>
+
+    <spark.version>3.4.0</spark.version>
+    <scala.tools.version>2.12</scala.tools.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>gbif-all</id>
+      <url>https://repository.gbif.org/content/groups/gbif/</url>
+    </repository>
+    <repository>
+      <id>gbif-thirdparty</id>
+      <url>https://repository.gbif.org/content/repositories/thirdparty/</url>
+    </repository>
+    <repository>
+      <id>cloudera-repos</id>
+      <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Deeplearning4j Core Libraries -->
+    <dependency>
+      <groupId>org.deeplearning4j</groupId>
+      <artifactId>deeplearning4j-core</artifactId>
+      <version>${deeplearning4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.hbase.connectors.spark</groupId>
+      <artifactId>hbase-spark</artifactId>
+      <version>${hbase-spark.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>curator-client</artifactId>
+          <groupId>org.apache.curator</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hbase-zookeeper</artifactId>
+          <groupId>org.apache.hbase</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-client</artifactId>
+      <version>${hbase.version}</version>
+      <exclusions>
+        <!-- ignore MR1 artifacts -->
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-core</artifactId>
+        </exclusion>
+        <!-- remove logging which we'll ship to logback -->
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <artifactId>curator-framework</artifactId>
+          <groupId>org.apache.curator</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- e.g. TableMapper is in the server jar (!) -->
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-server</artifactId>
+      <version>${hbase.version}</version>
+      <exclusions>
+        <!-- ignore MR1 artifacts -->
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-core</artifactId>
+        </exclusion>
+        <!-- ignore logging implementations -->
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <!-- this brings in test classifier stuff -->
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-hdfs</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-common</artifactId>
+      <version>${hbase.version}</version>
+      <exclusions>
+        <!-- ignore MR1 artifacts -->
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-core</artifactId>
+        </exclusion>
+        <!-- remove logging which we'll ship to logback -->
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-protocol</artifactId>
+      <version>${hbase.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.zookeeper</groupId>
+      <artifactId>zookeeper</artifactId>
+      <version>${zookeeper.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Elasticsearch Hadoop connector -->
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch-hadoop</artifactId>
+      <version>${elasticsearch-hadoop.version}</version>
+    </dependency>
+
+    <!-- Deeplearning4j NLP Module (if needed) -->
+    <dependency>
+      <groupId>org.deeplearning4j</groupId>
+      <artifactId>deeplearning4j-nlp</artifactId>
+      <version>${deeplearning4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.deeplearning4j</groupId>
+      <artifactId>deeplearning4j-zoo</artifactId>
+      <version>${deeplearning4j.version}</version>
+    </dependency>
+
+    <!-- Deeplearning4j UI Module (if needed) -->
+    <dependency>
+      <groupId>org.deeplearning4j</groupId>
+      <artifactId>deeplearning4j-ui</artifactId>
+      <version>${deeplearning4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.nd4j</groupId>
+      <artifactId>nd4j-api</artifactId>
+      <version>${deeplearning4j.version}</version>
+    </dependency>
+
+    <!-- Deeplearning4j Image Module (for image processing) -->
+    <dependency>
+      <groupId>org.deeplearning4j</groupId>
+      <artifactId>deeplearning4j-nn</artifactId>
+      <version>${deeplearning4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-core_${scala.tools.version}</artifactId>
+      <version>${spark.version}</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>curator-recipes</artifactId>
+          <groupId>org.apache.curator</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-sql_${scala.tools.version}</artifactId>
+      <version>${spark.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>
