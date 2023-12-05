@@ -1,0 +1,7 @@
+indexName:
+downloadPath:
+elasticsearch:
+  hosts:
+  connectionTimeOut:
+  socketTimeOut:
+  connectionRequestTimeOut:

@@ -1,0 +1,16 @@
+{
+  "properties": {
+    "identifier": {"type": "keyword"},
+    "datasetKey": {"type": "keyword"},
+    "gbifId": {"type": "keyword"},
+    "classKey": {"type": "integer"},
+    "photoId": {"type": "keyword"},
+    "fileExtension": {"type": "keyword"},
+    "embedding": {
+      "type": "dense_vector",
+      "dims": 1000,
+      "index": true,
+      "similarity": "dot_product"
+    }
+  }
+}

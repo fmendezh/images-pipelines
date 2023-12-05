@@ -1,6 +1,7 @@
 package org.gbif.images;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Iterator;
 import javax.imageio.ImageIO;
@@ -12,6 +13,7 @@ import javax.imageio.stream.ImageInputStream;
 import lombok.Builder;
 import lombok.Data;
 import lombok.SneakyThrows;
+import org.opencv.core.Mat;
 
 @Data
 @Builder
@@ -25,19 +27,18 @@ public class ImageMetadata {
 
   @SneakyThrows
   public static ImageMetadata of(byte[] rawImage){
-    ImageInputStream imageInputStream = ImageIO.createImageInputStream(rawImage);
-    Iterator<ImageReader> readers = ImageIO.getImageReaders(imageInputStream);
-    if (readers.hasNext()) {
-      ImageReader reader = readers.next();
-      return ImageMetadata
-              .builder()
-              .width(reader.getWidth(0))
-              .height(reader.getHeight(0))
-              .channels(numberOfChannels(reader))
-              .build();
+    BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(rawImage));
+    return of(bufferedImage);
+  }
 
-    }
-    throw new RuntimeException("Image metadata not found!");
+  @SneakyThrows
+  public static ImageMetadata of(BufferedImage bufferedImage){
+    return ImageMetadata
+            .builder()
+            .width(bufferedImage.getWidth())
+            .height(bufferedImage.getHeight())
+            .channels(3)
+            .build();
   }
 
   @SneakyThrows
