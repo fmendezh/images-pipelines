@@ -30,6 +30,7 @@ import static org.gbif.images.ImageUtils.downloadImage;
 import static org.gbif.images.ImageUtils.toByteArray;
 import static org.gbif.images.ImageUtils.getFileExtension;
 
+
 @RestController
 @RequestMapping(value = "images", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ImagesResource {

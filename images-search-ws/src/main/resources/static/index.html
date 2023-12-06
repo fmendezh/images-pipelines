@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Similar images</title>
+  
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      font-family: sans-serif;
+    }
+    
+    h1 {
+      color: coral;
+    }
+    
+    .grid-container {
+      columns: 5 200px;
+      column-gap: 1.5rem;
+      width: 90%;
+      margin: 0 auto;
+    }
+    .grid-container div {
+      width: 150px;
+      margin: 0 1.5rem 1.5rem 0;
+      display: inline-block;
+      width: 100%;
+      border: solid 2px grey;
+      padding: 5px;
+      box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+      border-radius: 5px;
+    }
+    .grid-container div img {
+      width: 100%;
+      border-radius: 5px;
+    }
+    .grid-container div p {
+      margin: 5px 0;
+      padding: 0;
+      text-align: center;
+    } 
+</style>
+
+
+</head>
+<body>
+<h1>Image similarity search</h1>
+<label for="imageUrl">Image URL:</label>
+<input type="text" id="imageUrl" placeholder="Enter image URL" maxlength="1024" size="100">
+<button onclick="search()">Search</button>
+<div id="image" class="grid-container">
+
+</div>
+<div id="results" class="grid-container">
+
+</div>
+  
+  
+<script>
+var getJSON = function(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status === 200) {
+        callback(null, xhr.response);
+      } else {
+        callback(status, xhr.response);
+      }
+    };
+    xhr.send();
+};
+
+var search = function() {
+  var imageUrl = document.getElementById('imageUrl').value;
+  if (imageUrl) {
+    getJSON('../images/search?imageUrl=' + document.getElementById('imageUrl').value,
+    function(err, data) {
+      if (err !== null) {
+        alert('Something went wrong: ' + err);
+      } else {
+        document.getElementById('results').innerHTML ='';
+        data.results.forEach(function(r) {
+          var d = document.createElement('div');
+          d.innerHTML = "<img class='grid-item grid-item-2' src='" + r.identifier +"'>" +
+          "<p>GBIF record: " + r.gbifId + "</p>";
+          document.getElementById('results').appendChild(d);
+        });
+      }
+    });
+    document.getElementById('image').innerHTML = '';
+     var d = document.createElement('div');
+     d.innerHTML = "<h2>Input Image</h2><br/><img class='grid-item grid-item-2' src='" + imageUrl +"'>"
+     document.getElementById('image').appendChild(d);
+   }
+}
+</script>
+  
+</body>
+</html>
